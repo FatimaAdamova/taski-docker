@@ -143,9 +143,10 @@ jobs:
       - name: Push to DockerHub
         uses: docker/build-push-action@v4
         with:
-          context: ./gateway/  # Правильный путь к папке gateway
+          context: ./gateway/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/taski_gateway:latest
+          # Тут вместо username должен быть ваш логин на Docker Hub
+          tags: ${{ secrets.DOCKER_PASSWORD }}e/taski_gateway:latest 
   deploy:
     runs-on: ubuntu-latest
     needs: 
