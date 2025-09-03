@@ -1,0 +1,29 @@
+# Секция services должна быть ПЕРВОЙ
+# Уберите все комментарии в начале файла
+
+frontend:
+  image: fatimaadamova/taski_frontend
+  env_file: .env
+  command: cp -r /app/build/. /frontend_static/
+  volumes:
+    - static_volume:/frontend_static
+
+backend:
+  image: fatimaadamova/taski_backend
+  env_file: .env
+  volumes:
+    - static_volume:/backend_static
+
+db:
+  image: postgres:13.10
+  env_file: .env
+  volumes:
+    - pg_data_production:/var/lib/postgresql/data
+
+gateway:
+  image: fatimaadamova/taski_gateway
+  env_file: .env
+  volumes:
+    - static_volume:/staticfiles/
+  ports:
+    - "8000:80"
