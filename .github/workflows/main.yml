@@ -168,6 +168,16 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.production.yml"
           target: "taski"
+      - name: Clean old docker-compose on server
+        uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USER }}
+            key: ${{ secrets.SSH_KEY }}
+            passphrase: ${{ secrets.SSH_PASSPHRASE }}
+            script: |
+              cd taski
+              rm -f docker-compose.production.yml
       - name: Executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
