@@ -1,4 +1,4 @@
-version: '3.8'
+version: '2.4'  # Максимальная версия для старых Docker Toolbox
 
 services:
   frontend:
@@ -30,4 +30,6 @@ services:
 
 volumes:
   static_volume:
+    driver: local
   pg_data_production:
+    driver: local
