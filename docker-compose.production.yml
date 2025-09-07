@@ -1,5 +1,3 @@
-version: '2.4'  # Максимальная версия для старых Docker Toolbox
-
 services:
   frontend:
     image: fatimaadamova/taski_frontend
@@ -23,10 +21,11 @@ services:
   gateway:
     image: fatimaadamova/taski_gateway
     env_file: .env
-    volumes:
-      - static_volume:/staticfiles/
     ports:
       - "8000:80"
+    volumes:
+      - static_volume:/staticfiles/
+      - /etc/letsencrypt:/etc/letsencrypt:ro
 
 volumes:
   static_volume:
