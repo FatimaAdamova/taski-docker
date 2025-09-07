@@ -138,12 +138,11 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
+            rm -rf taski
             mkdir -p taski
-            cd taski
-            rm -f docker-compose.production.yml
       
       # ВТОРОЕ: копируем новый файл
-      - name: Copy docker-compose.yml via ssh
+      - name: Copy docker-compose.yml
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -152,9 +151,17 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.production.yml"
           target: "taski/"
-      
+      - name: Copy .env file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          source: ".env"
+          target: "taski/"
       # ТРЕТЬЕ: выполняем деплой
-      - name: Executing remote ssh commands to deploy
+      - name: Deploy application
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -163,12 +170,9 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd taski
-            # Проверяем что файл существует
-            ls -la docker-compose.production.yml
-            # Выполняем pull образов с Docker Hub
             sudo docker compose -f docker-compose.production.yml pull
-            # Перезапускаем все контейнеры
             sudo docker compose -f docker-compose.production.yml down
+            sudo docker compose -f docker-compose.production.yml up -d db
+            sleep 10
             sudo docker compose -f docker-compose.production.yml up -d
-            # Выполняем миграции и сбор статики
             sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
