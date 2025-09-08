@@ -1,10 +1,14 @@
-FROM node:16-bullseye as build
+FROM node:16-bullseye
 WORKDIR /app
-COPY package*.json ./
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
 RUN npm install
+
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Эта команда запустит встроенный сервер на Node.js, который будет раздавать
+# содержимое директории /app/build на порте 8000
+CMD ["npx", "-y", "http-server", "-p", "8000", "/app/build"]
