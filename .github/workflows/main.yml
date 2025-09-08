@@ -151,15 +151,24 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.production.yml"
           target: "taski/"
-      - name: Copy .env file
-        uses: appleboy/scp-action@master
+      - name: Create .env file on server
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: "backend/.env"
-          target: "taski/"
+          script: |
+            cd taski
+            cat > .env << 'EOF'
+            POSTGRES_USER=django_user
+            POSTGRES_PASSWORD=mysecretpassword
+            POSTGRES_DB=django
+            DB_HOST=db
+            DB_PORT=5432
+            DEBUG=False
+            ALLOWED_HOSTS=afihost.ddns.net
+            EOF
       # ТРЕТЬЕ: выполняем деплой
       - name: Deploy application
         uses: appleboy/ssh-action@master
