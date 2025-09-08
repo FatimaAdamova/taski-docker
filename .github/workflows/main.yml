@@ -187,3 +187,15 @@ jobs:
             sleep 10
             sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
             sudo docker compose -f docker-compose.production.yml up -d
+
+      - name: Send Telegram notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ✅ Деплой Taski успешно завершен!
+            Репозиторий: ${{ github.repository }}
+            Коммит: ${{ github.sha }}
+            Время: ${{ github.event.head_commit.timestamp }}
+            Статус: Успешно 🎉
