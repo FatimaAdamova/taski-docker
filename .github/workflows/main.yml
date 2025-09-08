@@ -158,7 +158,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: ".env"
+          source: "backend/.env"
           target: "taski/"
       # ТРЕТЬЕ: выполняем деплой
       - name: Deploy application
