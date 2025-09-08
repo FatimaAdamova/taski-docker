@@ -25,10 +25,6 @@ services:
   gateway:
     image: fatimaadamova/taski_gateway
     env_file: .env
-    ports:
-      - "8000:80"
-      - "80:80" 
-      - "443:443"
     volumes:
       - static_volume:/static_files/
       - /etc/letsencrypt:/etc/letsencrypt:ro
