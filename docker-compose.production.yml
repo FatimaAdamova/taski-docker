@@ -2,7 +2,7 @@ services:
   frontend:
     image: fatimaadamova/taski_frontend
     env_file: .env
-    command: cp -r /app/build/. /static_files/
+    command: sh -c "cp -r /app/build/. /static_files/ && tail -f /dev/null"
     volumes:
       - static_volume:/static_files/
 
