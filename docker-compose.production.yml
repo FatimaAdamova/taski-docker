@@ -26,6 +26,8 @@ services:
 
   gateway:
     image: fatimaadamova/taski_gateway
+    ports:
+    - "8000:80"
     env_file: .env
     volumes:
       - static_volume:/static_files/
