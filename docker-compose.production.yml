@@ -2,7 +2,9 @@ services:
   frontend:
     image: fatimaadamova/taski_frontend
     env_file: .env
-    command: sh -c "cp -r /app/build/. /static_files/ && tail -f /dev/null"
+    command: npx http-server -p 8000 /app/build
+    ports:
+      - "8000:8000"
     volumes:
       - static_volume:/static_files/
 
@@ -25,6 +27,8 @@ services:
   gateway:
     image: fatimaadamova/taski_gateway
     env_file: .env
+    ports:
+    - "80:80"
     volumes:
       - static_volume:/static_files/
       - /etc/letsencrypt:/etc/letsencrypt:ro
