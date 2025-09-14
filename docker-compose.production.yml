@@ -3,6 +3,8 @@ services:
     image: fatimaadamova/taski_frontend
     env_file: .env
     command: npx http-server -p 8000 /app/build
+    volumes:
+      - static_volume:/app/static/
     ports:
       - "3000:8000"
 
