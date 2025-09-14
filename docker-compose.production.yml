@@ -1,42 +1,34 @@
+version: '3'
+
+volumes:
+  pg_data_production:
+  static_volume:
+
 services:
-  frontend:
-    image: fatimaadamova/taski_frontend
-    env_file: .env
-    command: >
-      sh -c "cp -r /app/build/. /frontend_static/ &&
-         npx http-server -p 8000 /app/build"
-    volumes:
-      - static_volume:/frontend_static
-    ports:
-      - "3000:8000"
-
-  backend:
-    image: fatimaadamova/taski_backend
-    env_file: .env
-    volumes:
-      - static_volume:/backend_static
-    command: >
-      sh -c "python manage.py collectstatic --noinput &&
-           python manage.py migrate &&
-           gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
-
   db:
     image: postgres:13.10
     env_file: .env
     volumes:
       - pg_data_production:/var/lib/postgresql/data
-
+  backend:
+    image: fatimaadamova/taski_backend
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - static_volume:/backend_static
+  frontend:
+    image: fatimaadamova/taski_frontend
+    env_file: .env
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static_volume:/frontend_static
   gateway:
     image: fatimaadamova/taski_gateway
-    ports:
-    - "8000:80"
     env_file: .env
     volumes:
       - static_volume:/staticfiles/
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-
-volumes:
-  static_volume:
-    driver: local
-  pg_data_production:
-    driver: local
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
