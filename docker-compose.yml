@@ -12,21 +12,23 @@ backend:
   links:
     - db
   volumes:
-    - backend_static:/app/staticfiles
+    - static:/backend_static
 
 frontend:
   build: ./frontend/
+  command: cp -r /app/build/. /frontend_static/
   env_file: .env
   ports:
     - "3000:3000"
   links:
     - backend
   volumes:
-    - frontend_static:/app/staticfiles
+    - static:/frontend_static
 
 gateway:
   build: ./gateway/
+  env_file: .env
   volumes:
-    - static_volume:/static
+    - static:/staticfiles
   ports:
     - "8000:80"
