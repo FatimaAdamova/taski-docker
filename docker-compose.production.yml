@@ -20,7 +20,7 @@ services:
     command: >
       sh -c "python manage.py collectstatic --noinput &&
              python manage.py migrate --noinput &&
-             gunicorn --bind 0.0.0.0:8000 taski.wsgi:application"
+             gunicorn --bind 0.0.0.0:8000 backend.wsgi:application"
   frontend:
     image: fatimaadamova/taski_frontend
     env_file: .env
