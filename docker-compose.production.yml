@@ -17,6 +17,10 @@ services:
       - db
     volumes:
       - static_volume:/backend_static
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate --noinput &&
+             gunicorn --bind 0.0.0.0:8000 taski.wsgi:application"
   frontend:
     image: fatimaadamova/taski_frontend
     env_file: .env
